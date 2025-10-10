@@ -1,0 +1,407 @@
+{
+  "info": {
+    "name": "FormEngine API",
+    "description": "Collection completa da API FormEngine",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000/api",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Test User\",\n  \"email\": \"test@example.com\",\n  \"password\": \"Test@123\",\n  \"role\": \"user\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Login Admin",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@formengine.com\",\n  \"password\": \"Admin@123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Login Test User",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"Test@123\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Forms",
+      "item": [
+        {
+          "name": "Get All Forms",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/forms",
+              "host": ["{{baseUrl}}"],
+              "path": ["forms"]
+            }
+          }
+        },
+        {
+          "name": "Get Form By Id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/forms/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["forms", "1"]
+            }
+          }
+        },
+        {
+          "name": "Create Form",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Cadastro de Cliente\",\n  \"schemaJson\": \"{\\\"fields\\\":[{\\\"type\\\":\\\"text\\\",\\\"label\\\":\\\"Nome\\\",\\\"required\\\":true},{\\\"type\\\":\\\"email\\\",\\\"label\\\":\\\"Email\\\",\\\"required\\\":true},{\\\"type\\\":\\\"tel\\\",\\\"label\\\":\\\"Telefone\\\"}]}\",\n  \"rolesAllowed\": \"[\\\"admin\\\",\\\"gestor\\\",\\\"user\\\"]\",\n  \"version\": \"1.0.0\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/forms",
+              "host": ["{{baseUrl}}"],
+              "path": ["forms"]
+            }
+          }
+        },
+        {
+          "name": "Update Form",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Cadastro de Cliente - Atualizado\",\n  \"schemaJson\": \"{\\\"fields\\\":[{\\\"type\\\":\\\"text\\\",\\\"label\\\":\\\"Nome Completo\\\",\\\"required\\\":true}]}\",\n  \"rolesAllowed\": \"[\\\"admin\\\",\\\"gestor\\\"]\",\n  \"version\": \"1.1.0\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/forms/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["forms", "1"]
+            }
+          }
+        },
+        {
+          "name": "Delete Form",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/forms/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["forms", "1"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Submissions",
+      "item": [
+        {
+          "name": "Create Submission",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"formId\": 1,\n  \"dataJson\": \"{\\\"nome\\\":\\\"João Silva\\\",\\\"email\\\":\\\"joao@example.com\\\",\\\"telefone\\\":\\\"11999999999\\\"}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/submissions",
+              "host": ["{{baseUrl}}"],
+              "path": ["submissions"]
+            }
+          }
+        },
+        {
+          "name": "Get Submissions By Form",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/submissions/form/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["submissions", "form", "1"]
+            }
+          }
+        },
+        {
+          "name": "Get Submissions By User",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/submissions/user/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["submissions", "user", "1"]
+            }
+          }
+        },
+        {
+          "name": "Get My Submissions",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/submissions/my-submissions",
+              "host": ["{{baseUrl}}"],
+              "path": ["submissions", "my-submissions"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Menus",
+      "item": [
+        {
+          "name": "Get All Menus",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/menus",
+              "host": ["{{baseUrl}}"],
+              "path": ["menus"]
+            }
+          }
+        },
+        {
+          "name": "Get Menu By Id",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/menus/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["menus", "1"]
+            }
+          }
+        },
+        {
+          "name": "Create Menu",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Dashboard\",\n  \"contentType\": \"page\",\n  \"urlOrPath\": \"/dashboard\",\n  \"rolesAllowed\": \"[\\\"admin\\\",\\\"gestor\\\"]\",\n  \"order\": 1,\n  \"icon\": \"dashboard\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/menus",
+              "host": ["{{baseUrl}}"],
+              "path": ["menus"]
+            }
+          }
+        },
+        {
+          "name": "Create Submenu",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Formulários\",\n  \"contentType\": \"form\",\n  \"urlOrPath\": \"/forms\",\n  \"rolesAllowed\": \"[\\\"admin\\\",\\\"gestor\\\",\\\"user\\\"]\",\n  \"order\": 1,\n  \"icon\": \"forms\",\n  \"parentId\": 1\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/menus",
+              "host": ["{{baseUrl}}"],
+              "path": ["menus"]
+            }
+          }
+        },
+        {
+          "name": "Update Menu",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Dashboard Principal\",\n  \"contentType\": \"page\",\n  \"urlOrPath\": \"/dashboard/main\",\n  \"rolesAllowed\": \"[\\\"admin\\\"]\",\n  \"order\": 0,\n  \"icon\": \"dashboard-updated\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/menus/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["menus", "1"]
+            }
+          }
+        },
+        {
+          "name": "Delete Menu",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/menus/1",
+              "host": ["{{baseUrl}}"],
+              "path": ["menus", "1"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
