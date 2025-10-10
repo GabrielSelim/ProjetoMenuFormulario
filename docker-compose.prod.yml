@@ -10,8 +10,8 @@ services:
       MYSQL_DATABASE: formengine_db
       MYSQL_USER: formengine_user
       MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-    ports:
-      - "127.0.0.1:3306:3306"  # Só aceita conexões locais
+    # ports:
+      # - "127.0.0.1:3307:3306"  # Removido - apenas conexões internas entre containers
     volumes:
       - mysql_prod_data:/var/lib/mysql
     networks:
