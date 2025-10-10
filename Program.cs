@@ -181,15 +181,13 @@ async Task WaitForDatabaseAsync(IServiceProvider services, ILogger logger)
 }
 
 // Configure the HTTP request pipeline
-if (app.Environment.IsDevelopment())
+// Habilitar Swagger em todos os ambientes (incluindo Production)
+app.UseSwagger();
+app.UseSwaggerUI(c =>
 {
-    app.UseSwagger();
-    app.UseSwaggerUI(c =>
-    {
-        c.SwaggerEndpoint("/swagger/v1/swagger.json", "FormEngine API v1");
-        c.RoutePrefix = string.Empty; // Swagger na raiz
-    });
-}
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "FormEngine API v1");
+    c.RoutePrefix = string.Empty; // Swagger na raiz
+});
 
 app.UseHttpsRedirection();
 
