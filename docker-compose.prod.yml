@@ -1,0 +1,61 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: formengine_mysql_prod
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: formengine_db
+      MYSQL_USER: formengine_user
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "127.0.0.1:3306:3306"  # Só aceita conexões locais
+    volumes:
+      - mysql_prod_data:/var/lib/mysql
+    networks:
+      - formengine_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 60s
+    command: --default-authentication-plugin=mysql_native_password
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    container_name: formengine_api_prod
+    restart: always
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DefaultConnection=Server=db;Port=3306;Database=formengine_db;User=formengine_user;Password=${MYSQL_PASSWORD};
+      - JwtSettings__SecretKey=${JWT_SECRET_KEY}
+      - JwtSettings__ExpirationHours=24
+      - ASPNETCORE_FORWARDEDHEADERS_ENABLED=true
+    ports:
+      - "127.0.0.1:5000:80"  # Só aceita conexões locais
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - formengine_network
+    volumes:
+      - ./logs:/app/logs
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+volumes:
+  mysql_prod_data:
+
+networks:
+  formengine_network:
+    driver: bridge

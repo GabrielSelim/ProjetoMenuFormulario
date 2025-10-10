@@ -17,7 +17,14 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 var serverVersion = new MySqlServerVersion(new Version(8, 0, 21));
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseMySql(connectionString, serverVersion));
+    options.UseMySql(connectionString, serverVersion, mySqlOptions =>
+    {
+        // Adiciona retry em caso de falha transitória
+        mySqlOptions.EnableRetryOnFailure(
+            maxRetryCount: 3,
+            maxRetryDelay: TimeSpan.FromSeconds(10),
+            errorNumbersToAdd: null);
+    }));
 
 // Add AutoMapper
 builder.Services.AddAutoMapper(typeof(MappingProfile));
@@ -127,15 +134,49 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-    try
+    var logger = services.GetRequiredService<ILogger<Program>>();
+    
+    // Aguarda o banco de dados ficar disponível e aplica as migrations
+    await WaitForDatabaseAsync(services, logger);
+}
+
+async Task WaitForDatabaseAsync(IServiceProvider services, ILogger logger)
+{
+    const int maxAttempts = 60; // 60 tentativas (5 minutos)
+    const int delayMs = 5000;   // 5 segundos entre tentativas
+    
+    for (int attempt = 1; attempt <= maxAttempts; attempt++)
     {
-        var context = services.GetRequiredService<ApplicationDbContext>();
-        context.Database.Migrate();
-    }
-    catch (Exception ex)
-    {
-        var logger = services.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "Erro ao aplicar migrations");
+        try
+        {
+            logger.LogInformation("Tentativa {Attempt}/{MaxAttempts} - Verificando conexão com o banco de dados...", attempt, maxAttempts);
+            
+            var context = services.GetRequiredService<ApplicationDbContext>();
+            
+            // Testa a conexão
+            await context.Database.CanConnectAsync();
+            logger.LogInformation("✓ Conexão com banco de dados estabelecida!");
+            
+            // Aplica as migrations
+            logger.LogInformation("Aplicando migrations...");
+            await context.Database.MigrateAsync();
+            logger.LogInformation("✓ Migrations aplicadas com sucesso!");
+            
+            return; // Sucesso - sai do loop
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning("Tentativa {Attempt} falhou: {Error}", attempt, ex.Message);
+            
+            if (attempt == maxAttempts)
+            {
+                logger.LogError(ex, "❌ Falha ao conectar com o banco de dados após {MaxAttempts} tentativas", maxAttempts);
+                throw; // Re-lança a exceção na última tentativa
+            }
+            
+            logger.LogInformation("Aguardando {Delay}ms antes da próxima tentativa...", delayMs);
+            await Task.Delay(delayMs);
+        }
     }
 }
 
