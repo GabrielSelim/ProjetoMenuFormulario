@@ -95,7 +95,7 @@ ScaffoldingReadMe.txt
 **/packages/*
 
 # Migration files (optional, comment if you want to track migrations)
-**/Migrations/
+# **/Migrations/ - REMOVIDO PARA PERMITIR MIGRATIONS EM PRODUÇÃO
 
 # Environment files
 .env
