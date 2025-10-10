@@ -38,7 +38,7 @@ services:
       - JwtSettings__ExpirationHours=24
       - ASPNETCORE_FORWARDEDHEADERS_ENABLED=true
     ports:
-      - "127.0.0.1:5000:80"  # Só aceita conexões locais
+      - "127.0.0.1:5001:80"  # Mudança para porta 5001
     depends_on:
       db:
         condition: service_healthy
@@ -46,12 +46,12 @@ services:
       - formengine_network
     volumes:
       - ./logs:/app/logs
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost/health"]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-      start_period: 60s
+    # healthcheck:
+      # test: ["CMD", "curl", "-f", "http://localhost/health"]
+      # interval: 30s
+      # timeout: 10s
+      # retries: 3
+      # start_period: 60s
 
 volumes:
   mysql_prod_data:
