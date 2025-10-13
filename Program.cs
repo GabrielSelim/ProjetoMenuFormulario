@@ -27,7 +27,7 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     }));
 
 // Add AutoMapper
-builder.Services.AddAutoMapper(typeof(MappingProfile));
+builder.Services.AddAutoMapper(typeof(MappingProfile), typeof(SubmissaoFormularioProfile));
 
 // Add FluentValidation
 builder.Services.AddFluentValidationAutoValidation();
@@ -45,6 +45,9 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IFormService, FormService>();
 builder.Services.AddScoped<ISubmissionService, SubmissionService>();
 builder.Services.AddScoped<IMenuService, MenuService>();
+
+// Add novo serviço de submissões com workflow
+builder.Services.AddScoped<IServicoSubmissaoFormulario, ServicoSubmissaoFormulario>();
 
 // Add JWT Authentication
 var jwtSettings = builder.Configuration.GetSection("JwtSettings");

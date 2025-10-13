@@ -11,7 +11,7 @@ services:
       MYSQL_USER: formengine_user
       MYSQL_PASSWORD: formengine_pass
     ports:
-      - "3307:3306"
+      - "3309:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     networks:
