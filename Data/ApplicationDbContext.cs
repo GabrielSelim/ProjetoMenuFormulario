@@ -38,7 +38,16 @@ public class ApplicationDbContext : DbContext
             entity.Property(e => e.Name).IsRequired().HasMaxLength(200);
             entity.Property(e => e.SchemaJson).IsRequired().HasColumnType("text");
             entity.Property(e => e.RolesAllowed).HasMaxLength(500);
-            entity.Property(e => e.Version).HasMaxLength(50);
+            entity.Property(e => e.Version).HasMaxLength(10);
+            entity.Property(e => e.IsLatest).IsRequired().HasDefaultValue(true);
+            
+            entity.HasIndex(e => e.OriginalFormId);
+            entity.HasIndex(e => new { e.OriginalFormId, e.IsLatest });
+            
+            entity.HasOne(e => e.OriginalForm)
+                .WithMany(f => f.Versions)
+                .HasForeignKey(e => e.OriginalFormId)
+                .OnDelete(DeleteBehavior.Restrict);
         });
 
         // FormSubmission configuration
@@ -87,10 +96,17 @@ public class ApplicationDbContext : DbContext
             entity.Property(e => e.UrlOrPath).HasMaxLength(500);
             entity.Property(e => e.RolesAllowed).HasMaxLength(500);
             entity.Property(e => e.Icon).HasMaxLength(100);
+            entity.Property(e => e.FormVersion).HasMaxLength(10);
+            entity.Property(e => e.UseLatestVersion).IsRequired().HasDefaultValue(true);
             
             entity.HasOne(e => e.Parent)
                 .WithMany(m => m.Children)
                 .HasForeignKey(e => e.ParentId)
+                .OnDelete(DeleteBehavior.Restrict);
+                
+            entity.HasOne(e => e.OriginalForm)
+                .WithMany()
+                .HasForeignKey(e => e.OriginalFormId)
                 .OnDelete(DeleteBehavior.Restrict);
         });
 

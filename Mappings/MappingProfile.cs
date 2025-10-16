@@ -14,8 +14,14 @@ public class MappingProfile : Profile
 
         // Form mappings
         CreateMap<Form, FormDto>();
+        CreateMap<Form, FormVersionDto>();
         CreateMap<CreateFormDto, Form>();
-        CreateMap<UpdateFormDto, Form>();
+        CreateMap<UpdateFormDto, Form>()
+            .ForMember(dest => dest.Id, opt => opt.Ignore())
+            .ForMember(dest => dest.OriginalFormId, opt => opt.Ignore())
+            .ForMember(dest => dest.IsLatest, opt => opt.Ignore())
+            .ForMember(dest => dest.CreatedAt, opt => opt.Ignore())
+            .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(src => DateTime.UtcNow));
 
         // FormSubmission mappings
         CreateMap<FormSubmission, FormSubmissionDto>()

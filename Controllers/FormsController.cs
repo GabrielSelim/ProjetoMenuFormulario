@@ -97,4 +97,61 @@ public class FormsController : ControllerBase
             return BadRequest(new { message = ex.Message });
         }
     }
+
+    /// <summary>
+    /// Lista todas as versões de um formulário
+    /// </summary>
+    [HttpGet("{originalFormId}/versions")]
+    public async Task<ActionResult<IEnumerable<FormVersionDto>>> GetFormVersions(int originalFormId)
+    {
+        try
+        {
+            var versions = await _formService.GetFormVersionsAsync(originalFormId);
+            return Ok(versions);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Busca a versão mais recente de um formulário
+    /// </summary>
+    [HttpGet("{originalFormId}/latest")]
+    public async Task<ActionResult<FormDto>> GetLatestVersion(int originalFormId)
+    {
+        try
+        {
+            var form = await _formService.GetLatestVersionAsync(originalFormId);
+            if (form == null)
+                return NotFound(new { message = "Formulário não encontrado" });
+
+            return Ok(form);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
+
+    /// <summary>
+    /// Busca uma versão específica de um formulário
+    /// </summary>
+    [HttpGet("{originalFormId}/version/{version}")]
+    public async Task<ActionResult<FormDto>> GetSpecificVersion(int originalFormId, string version)
+    {
+        try
+        {
+            var form = await _formService.GetSpecificVersionAsync(originalFormId, version);
+            if (form == null)
+                return NotFound(new { message = "Versão do formulário não encontrada" });
+
+            return Ok(form);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(new { message = ex.Message });
+        }
+    }
 }

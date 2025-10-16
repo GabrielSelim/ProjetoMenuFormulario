@@ -10,6 +10,9 @@ public class MenuDto
     public int Order { get; set; }
     public string Icon { get; set; } = string.Empty;
     public int? ParentId { get; set; }
+    public int? OriginalFormId { get; set; }
+    public string? FormVersion { get; set; }
+    public bool UseLatestVersion { get; set; }
     public List<MenuDto> Children { get; set; } = new List<MenuDto>();
 }
 
@@ -22,6 +25,9 @@ public class CreateMenuDto
     public int Order { get; set; } = 0;
     public string Icon { get; set; } = string.Empty;
     public int? ParentId { get; set; }
+    public int? OriginalFormId { get; set; }
+    public string? FormVersion { get; set; }
+    public bool UseLatestVersion { get; set; } = true;
 }
 
 public class UpdateMenuDto
@@ -33,4 +39,7 @@ public class UpdateMenuDto
     public int Order { get; set; }
     public string Icon { get; set; } = string.Empty;
     public int? ParentId { get; set; }
+    public int? OriginalFormId { get; set; }
+    public string? FormVersion { get; set; }
+    public bool UseLatestVersion { get; set; } = true;
 }

@@ -18,6 +18,17 @@ public class FormSubmission
     public int FormId { get; set; }
 
     /// <summary>
+    /// ID do formulário original (para versionamento)
+    /// </summary>
+    public int? OriginalFormId { get; set; }
+
+    /// <summary>
+    /// Versão do formulário usada na submissão
+    /// </summary>
+    [StringLength(10)]
+    public string? FormVersion { get; set; }
+
+    /// <summary>
     /// Referência para o usuário que criou a submissão
     /// </summary>
     [Required]
